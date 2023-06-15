@@ -20,3 +20,6 @@ Route::get('/demo-admin-lte', function () {
     return view('demo_page');
 });
 Route::get('/halo', [App\Http\Controllers\DummyController::class, 'index'])->name('halo');
+
+// ===========================portal================
+Route::get('/portal-apk', [App\Http\Controllers\PortalController::class, 'portal'])->name('portal-list');
