@@ -14,7 +14,7 @@ class PortalController extends BaseController
 {
     public function portal()
     {
-        $portal = DB::connection('mysql1')->table('portal_apk')->get();
+        $portal = DB::connection('mysql')->table('portal_apk')->get();
         return view('portal-apk.read', ['portal' => $portal]);
     }
 

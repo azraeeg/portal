@@ -43,17 +43,15 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
-        'mysql' => [
+        'mysql1' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => env('DB_HOST_DB1', '127.0.0.1'),
+            'port' => env('DB_PORT_DB1', '3306'),
+            'database' => env('DB_DATABASE_DB1', 'forge'),
+            'username' => env('DB_USERNAME_DB1', 'forge'),
+            'password' => env('DB_PASSWORD_DB1', ''),
             'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
@@ -62,8 +60,9 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+
         //===========mysq local===============
-        'mysql1' => [
+        'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST_MYSQL2', '127.0.0.1'),
             'port' => env('DB_PORT_MYSQL2', '3306'),
@@ -93,14 +92,29 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        'sqlsrv' => [
+        'sqlsrv1' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => env('DB_HOST_DB2', 'localhost'),
+            'port' => env('DB_PORT_DB2', '1433'),
+            'database' => env('DB_DATABASE_DB2', 'forge'),
+            'username' => env('DB_USERNAME_DB2', 'forge'),
+            'password' => env('DB_PASSWORD_DB2', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
+            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+        ],
+
+        'sqlsrv2' => [
+            'driver' => 'sqlsrv',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST_DB3', 'localhost'),
+            'port' => env('DB_PORT_DB3', '1433'),
+            'database' => env('DB_DATABASE_DB3', 'forge'),
+            'username' => env('DB_USERNAME_DB3', 'forge'),
+            'password' => env('DB_PASSWORD_DB3', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
