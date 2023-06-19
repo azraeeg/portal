@@ -23,3 +23,6 @@ Route::get('/halo', [App\Http\Controllers\DummyController::class, 'index'])->nam
 
 // ===========================portal================
 Route::get('/portal-apk', [App\Http\Controllers\PortalController::class, 'portal'])->name('portal-list');
+
+// ===========================poli==================
+Route::get('/antrian-poli/{id_lorong}', [App\Http\Controllers\PoliController::class, 'poli'])->name('poli-list');
