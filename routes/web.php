@@ -26,3 +26,6 @@ Route::get('/portal-apk', [App\Http\Controllers\PortalController::class, 'portal
 
 // ===========================poli==================
 Route::get('/antrian-poli/{id_lorong}', [App\Http\Controllers\PoliController::class, 'poli'])->name('poli-list');
+Route::get('/create-poli', [App\Http\Controllers\PoliController::class, 'create_poli'])->name('create-poli');
+Route::post('/store-poli', [App\Http\Controllers\PoliController::class, 'store_poli'])->name('store-poli');
+Route::get('/json-poli/{id_lorong}',[App\Http\Controllers\PoliController::class, 'cari_poli'])->name('cari-poli');
