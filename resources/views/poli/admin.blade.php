@@ -4,7 +4,9 @@
     <!-- <meta http-equiv="refresh" content="3" /> -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Antrian</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>AdminAntrian</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
@@ -26,13 +28,13 @@
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
   </head>
-  <style>
+  <!-- <style>
     body {
       background-image: url('{{ asset('assets/dist/img/begron.png') }}');
       background-repeat: no-repeat;
       background-size: cover;
     }
-  </style>
+  </style> -->
   <body>
   <div class="wrapper">
       <header class="py-5">
@@ -40,26 +42,29 @@
       </header>
       <div class="row">
         @foreach($poli as $a)
-          <div class="col-md-4">
-            <div class="card card-widget widget-user">
-              <div class="widget-user-header bg-info" style="height: 160px;">
-                <input type="hidden" class="id_lorong" value="{{$a->master_lorong_id}}" />
-                <h1 class="widget-user-desc nama_poli">{{$a->nama_poli}}</h1>
-                <h2 class="widget-user-desc nama_dokter">{{$a->nama_dokter}}</h2>
-              </div>
-              <div class="card-footer">
-                <div class="description-block">
-                  <h3 class="description-text" style="text-align:center;">NOMOR ANTRIAN</h3>
-                  <h4 class="description-text centered-h1" id="no_antri{{$a->id}}" style="font-size: 150px;"></h4>
+                <div class="col-md-4">
+                    <div class="card card-widget widget-user">
+                        <div class="widget-user-header bg-info" style="height: 160px;">
+                            <input type="hidden" class="id_lorong" value="{{$a->master_lorong_id}}" />
+                            <h1 class="widget-user-desc nama_poli">{{$a->nama_poli}}</h1>
+                            <h2 class="widget-user-desc nama_dokter">{{$a->nama_dokter}}</h2>
+                        </div>
+                        <div class="card-footer">
+                            <div class="description-block">
+                                <h3 class="description-text" style="text-align:center;">NOMOR ANTRIAN</h3>
+                                <h4 class="description-text centered-h1" id="no_antri{{$a->id}}" style="font-size: 150px;"></h4>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <button class="btn btn-primary btn-block btn-next" data-lorong="{{$a->id}}">Next</button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
         @endforeach
+
       </div>
   </div>
-              
-
     <!-- jQuery -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
     <!-- jQuery UI 1.11.4 -->
@@ -91,57 +96,57 @@
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
+
+
     <script>
-      $(document).ready(function() {
-          var soundPlayed = false; // Variabel flag untuk memeriksa apakah suara sudah diputar
+     $(document).ready(function() {
 
-          setInterval(function() {
-              soundPlayed = false; // Setel kembali flag menjadi false sebelum setiap iterasi
+         setInterval(function() {
+ 
+             $('.card-widget').each(function() {
+                 var cardWidget = $(this);
+                 var id_lorong = cardWidget.find('.id_lorong').val();
+                 var url = "{{route('cari-poli',':id_lorong')}}";
+                 $.ajax({
+                     type: "GET",
+                     url: url.replace(':id_lorong', id_lorong),
+                     dataType: 'json',
+                     success: function(res) {
+                         $.each(res, function(index, item) {
+                             cardWidget.find('#no_antri' + item.id).text(item.no_antri);
+                         });
+                     }
+                 });
+             });
+         }, 3000); // Mengatur waktu interval 3 detik (3000 milidetik)
 
-              $('.card-widget').each(function() {
-                  var cardWidget = $(this);
-                  var id_lorong = cardWidget.find('.id_lorong').val();
-                  var url = "{{route('cari-poli',':id_lorong')}}";
-                  $.ajax({
-                      type: "GET",
-                      url: url.replace(':id_lorong', id_lorong),
-                      dataType: 'json',
-                      success: function(res) {
-                          $.each(res, function(index, item) {
-                              var h1Element = document.querySelector('#no_antri' + item.id);
-                              var previousContent = h1Element.textContent;
-                              if (item.no_antri !== previousContent && !soundPlayed) {
-                                  playSound();
-                                  soundPlayed = true; 
-                              }
 
-                              cardWidget.find('#no_antri' + item.id).text(item.no_antri);
-                          });
-                      }
-                  });
-              });
-          }, 3000); // Mengatur waktu interval 3 detik (3000 milidetik)
-      });
-    </script>
-    <script>
-        var h1Element = document.querySelector('.centered-h1');
-        var previousContent = h1Element.textContent;
+        $('.btn-next').click(function() {
+            var button = $(this);
+            var lorongID = button.data('lorong');
+            var cardWidget = button.closest('.card-widget');
+            var noAntriElement = cardWidget.find('#no_antri' + lorongID);
+            var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Mendapatkan nilai token CSRF dari tag meta
 
-        function checkContentChange() {
-          var currentContent = h1Element.textContent;
-          if (currentContent !== previousContent) {
-            previousContent = currentContent;
-          }
-          setTimeout(checkContentChange, 100);
-        }
+            $.ajax({
+                type: "POST",
+                url: "{{ route('update-no-antri', ':id_lorong') }}".replace(':id_lorong', lorongID),
+                data: {
+                    _token: csrfToken, // Menambahkan token CSRF ke data permintaan
+                    lorongID: lorongID
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.success) {
+                        var nextAntri = res.no_antri;
+                        noAntriElement.text(nextAntri);
+                    }
+                }
+            });
+        });
 
-        function playSound() {
-          var audio = new Audio('{{ asset('assets/dist/img/bel.mp3') }}');
-          audio.play();
-        }
-        checkContentChange();
-    </script>
-    
 
-  </body>
+    });
+</script>    
+ </body>
 </html>

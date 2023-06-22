@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Poli;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -26,6 +27,63 @@ class PoliController extends BaseController
             ->where('master_lorong_id', $id_lorong)
             ->get();
         return Response()->json($poli);
+    }
+
+    public function cari_poli_admin($idLorong)
+    {
+        // Lakukan logika untuk mendapatkan nomor antrian terbaru berdasarkan ID lorong
+        $poli = DB::connection('mysql')
+
+            ->table('antrian_poli')
+            ->where('master_lorong_id', $idLorong)
+            ->orderBy('created_at', 'desc')
+            ->first();
+        
+        if ($poli) {
+            $noAntri = $poli->no_antri;
+            
+            // Ubah nomor antrian di database jika diperlukan, misalnya:
+             $poli->no_antri = $noAntri + 1;
+             $poli->save();
+
+             return response()->json([
+                'success' => true,
+                'no_antri' => $noAntri,
+            ]);
+            
+        }
+        
+        return response()->json([
+            'success' => false,
+            'no_antri' => null,
+        ]);
+    }
+
+    public function updateNoAntri($idLorong)
+    {
+        // Lakukan logika untuk mendapatkan nomor antrian terbaru berdasarkan ID lorong
+        $poli = Poli::find($idLorong);
+        
+        if ($poli) {
+            $noAntri = $poli->no_antri + 1;
+            $poli->no_antri = $noAntri;
+            $poli->save();
+
+            return response()->json([
+                'success' => true,
+                'no_antri' => $noAntri
+            ]);
+        }
+
+        return response()->json([
+            'success' => false
+        ]);
+    }
+
+    public function poli_admin($id_lorong)
+    {
+        $poli = DB::connection('mysql')->table('antrian_poli')->where('master_lorong_id', $id_lorong)->get();
+        return view('poli.admin', ['poli' => $poli]);
     }
 
     
