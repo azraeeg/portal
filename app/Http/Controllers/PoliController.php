@@ -29,19 +29,7 @@ class PoliController extends BaseController
         return Response()->json($poli);
     }
 
-    public function searchByNamaDokter(Request $request)
-    {
-        $keyword = $request->get('nama_dokter');
-        
-
-        // Lakukan pencarian berdasarkan nama dokter
-        $poliList = Poli::where('nama_dokter', 'like', '%' . $keyword . '%')->get();
-
-        // Lakukan operasi lain sesuai kebutuhan
-        dd($keyword);
-
-        return view('poli.admin', compact('keyword', 'poliList'));
-    }
+   
 
     public function updateNoAntri($idLorong)
     {
