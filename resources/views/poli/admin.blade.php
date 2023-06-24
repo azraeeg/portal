@@ -28,24 +28,39 @@
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
   </head>
-  <!-- <style>
+  <style>
     body {
       background-image: url('{{ asset('assets/dist/img/begron.png') }}');
       background-repeat: no-repeat;
       background-size: cover;
     }
-  </style> -->
+  </style>
   <body>
   <div class="wrapper">
       <header class="py-5">
-        <h1 class="display-5 fw-bold text-center" style="color: white;">ANTRIAN POLIKLINIK RSI KENDAL</h1>
+        <h1 class="display-5 fw-bold text-center" style="color: black;"></h1>
       </header>
+        <div class="col-md-6">
+            <div class="form-group">
+                <form method="GET" action="{{route('admin-poli', [$id_lorong])}}">
+                    @csrf
+                    <label style="font-size: 50px; color: white;">Cari Nama Dokter:</label>
+                    <div class="input-group" style="height: 60px;">
+                        <input type="text" class="form-control" name="nama_dokter" placeholder="Masukkan Nama Dokter" value=""style="height: 60px;" />
+                        <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Cari</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
       <div class="row">
         @foreach($poli as $a)
                 <div class="col-md-4">
                     <div class="card card-widget widget-user">
                         <div class="widget-user-header bg-info" style="height: 160px;">
-                            <input type="hidden" class="id_lorong" value="{{$a->master_lorong_id}}" />
+                        <input type="hidden" class="id_lorong" value="{{$a->master_lorong_id}}"/>
                             <h1 class="widget-user-desc nama_poli">{{$a->nama_poli}}</h1>
                             <h2 class="widget-user-desc nama_dokter">{{$a->nama_dokter}}</h2>
                         </div>
@@ -103,22 +118,26 @@
 
          setInterval(function() {
  
-             $('.card-widget').each(function() {
-                 var cardWidget = $(this);
-                 var id_lorong = cardWidget.find('.id_lorong').val();
-                 var url = "{{route('cari-poli',':id_lorong')}}";
-                 $.ajax({
-                     type: "GET",
-                     url: url.replace(':id_lorong', id_lorong),
-                     dataType: 'json',
-                     success: function(res) {
-                         $.each(res, function(index, item) {
-                             cardWidget.find('#no_antri' + item.id).text(item.no_antri);
-                         });
-                     }
-                 });
-             });
-         }, 3000); // Mengatur waktu interval 3 detik (3000 milidetik)
+        var keyword = $('input[name="nama_dokter"]').val(); // Mendapatkan nilai input dari form cari
+        $('.card-widget').each(function() {
+            var cardWidget = $(this);
+            var namaDokter = cardWidget.find('.nama_dokter').text().trim(); // Mendapatkan nilai nama_dokter pada elemen card-widget
+            if (namaDokter === keyword || keyword === '') {
+            var id_lorong = cardWidget.find('.id_lorong').val();
+            var url = "{{ route('cari-poli', ':id_lorong') }}".replace(':id_lorong', id_lorong);
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: 'json',
+                success: function(res) {
+                $.each(res, function(index, item) {
+                    cardWidget.find('#no_antri' + item.id).text(item.no_antri);
+                });
+                }
+            });
+            }
+        });
+        }, 3000); // Mengatur waktu interval 3 detik (3000 milidetik)
 
 
         $('.btn-next').click(function() {

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- <meta http-equiv="refresh" content="3" /> -->
+    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Antrian</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -32,6 +33,7 @@
       background-repeat: no-repeat;
       background-size: cover;
     }
+
   </style>
   <body>
   <div class="wrapper">
@@ -40,7 +42,7 @@
       </header>
       <div class="row">
         @foreach($poli as $a)
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="card card-widget widget-user">
               <div class="widget-user-header bg-info" style="height: 160px;">
                 <input type="hidden" class="id_lorong" value="{{$a->master_lorong_id}}" />
@@ -91,7 +93,60 @@
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
+
+
+
     <script>
+  $(document).ready(function() {
+    var soundPlayed = false; // Variabel flag untuk memeriksa apakah suara sudah diputar
+
+    setInterval(function() {
+      soundPlayed = false; // Setel kembali flag menjadi false sebelum setiap iterasi
+
+      $('.card-widget').each(function() {
+        var cardWidget = $(this);
+        var id_lorong = cardWidget.find('.id_lorong').val();
+        var url = "{{route('cari-poli',':id_lorong')}}";
+        $.ajax({
+          type: "GET",
+          url: url.replace(':id_lorong', id_lorong),
+          dataType: 'json',
+          success: function(res) {
+            $.each(res, function(index, item) {
+              var h1Element = document.querySelector('#no_antri' + item.id);
+              var previousContent = h1Element.textContent;
+              if (item.no_antri !== previousContent && !soundPlayed) {
+                playSound();
+                soundPlayed = true; 
+
+                var footerElement = $(h1Element).closest('.card-footer');
+                footerElement.addClass('bg-pink'); // Tambahkan kelas 'bg-pink' untuk mengubah warna latar belakang footer menjadi merah muda
+
+                setTimeout(function() {
+                  footerElement.removeClass('bg-pink'); // Hapus kelas 'bg-pink' setelah 3 detik
+                }, 3000);
+              }
+
+              cardWidget.find('#no_antri' + item.id).text(item.no_antri);
+            });
+          }
+        });
+      });
+    }, 3000); // Mengatur waktu interval 3 detik (3000 milidetik)
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <script>
       $(document).ready(function() {
           var soundPlayed = false; // Variabel flag untuk memeriksa apakah suara sudah diputar
 
@@ -122,7 +177,7 @@
               });
           }, 3000); // Mengatur waktu interval 3 detik (3000 milidetik)
       });
-    </script>
+    </script> -->
     <script>
         var h1Element = document.querySelector('.centered-h1');
         var previousContent = h1Element.textContent;

@@ -29,34 +29,18 @@ class PoliController extends BaseController
         return Response()->json($poli);
     }
 
-    public function cari_poli_admin($idLorong)
+    public function searchByNamaDokter(Request $request)
     {
-        // Lakukan logika untuk mendapatkan nomor antrian terbaru berdasarkan ID lorong
-        $poli = DB::connection('mysql')
-
-            ->table('antrian_poli')
-            ->where('master_lorong_id', $idLorong)
-            ->orderBy('created_at', 'desc')
-            ->first();
+        $keyword = $request->get('nama_dokter');
         
-        if ($poli) {
-            $noAntri = $poli->no_antri;
-            
-            // Ubah nomor antrian di database jika diperlukan, misalnya:
-             $poli->no_antri = $noAntri + 1;
-             $poli->save();
 
-             return response()->json([
-                'success' => true,
-                'no_antri' => $noAntri,
-            ]);
-            
-        }
-        
-        return response()->json([
-            'success' => false,
-            'no_antri' => null,
-        ]);
+        // Lakukan pencarian berdasarkan nama dokter
+        $poliList = Poli::where('nama_dokter', 'like', '%' . $keyword . '%')->get();
+
+        // Lakukan operasi lain sesuai kebutuhan
+        dd($keyword);
+
+        return view('poli.admin', compact('keyword', 'poliList'));
     }
 
     public function updateNoAntri($idLorong)
@@ -80,10 +64,19 @@ class PoliController extends BaseController
         ]);
     }
 
-    public function poli_admin($id_lorong)
+    public function poli_admin(Request $request, $id_lorong)
     {
-        $poli = DB::connection('mysql')->table('antrian_poli')->where('master_lorong_id', $id_lorong)->get();
-        return view('poli.admin', ['poli' => $poli]);
+        $keyword = $request->get('nama_dokter');
+        if (!empty($keyword)) {
+            $poli = Poli::where('nama_dokter', 'like', '%' . $keyword . '%')->get();
+        } else {
+            $poli = DB::connection('mysql')->table('antrian_poli')->where('master_lorong_id', $id_lorong)->get();
+            // $poli = null;
+        }
+
+        
+        
+        return view('poli.admin', ['poli' => $poli, 'id_lorong' => $id_lorong]);
     }
 
     

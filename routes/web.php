@@ -33,3 +33,4 @@ Route::get('/create-poli', [App\Http\Controllers\PoliController::class, 'create_
 Route::post('/store-poli', [App\Http\Controllers\PoliController::class, 'store_poli'])->name('store-poli');
 Route::post('/update-no-antri/{id_lorong}', [App\Http\Controllers\PoliController::class, 'updateNoAntri'])->name('update-no-antri');
 
+Route::get('/list-spk', [App\Http\Controllers\PoliController::class, 'searchByNamaDokter'])->name('nama-dokter');
