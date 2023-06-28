@@ -29,8 +29,6 @@ class PoliController extends BaseController
         return Response()->json($poli);
     }
 
-   
-
     public function updateNoAntri($idLorong)
     {
         // Lakukan logika untuk mendapatkan nomor antrian terbaru berdasarkan ID lorong
@@ -51,6 +49,27 @@ class PoliController extends BaseController
             'success' => false
         ]);
     }
+    public function resetNoAntri($idLorong)
+    {
+        // Lakukan logika untuk mendapatkan nomor antrian terbaru berdasarkan ID lorong
+        $poli = Poli::find($idLorong);
+        
+        if ($poli) {
+            $poli->no_antri = 0;
+            $poli->save();
+            
+
+            return response()->json([
+                'success' => true,
+                'no_antri' => 0
+            ]);
+        }
+
+        return response()->json([
+            'success' => false
+        ]);
+    }
+
 
     public function poli_admin(Request $request, $id_lorong)
     {
@@ -61,11 +80,11 @@ class PoliController extends BaseController
             $poli = DB::connection('mysql')->table('antrian_poli')->where('master_lorong_id', $id_lorong)->get();
             // $poli = null;
         }
-
-        
-        
-        return view('poli.admin', ['poli' => $poli, 'id_lorong' => $id_lorong]);
+        $list_dokter = Poli::get();
+        return view('poli.admin', ['poli' => $poli, 'id_lorong' => $id_lorong, 'list_dokter' => $list_dokter, 'keyword' => $keyword]);
     }
+
+  
 
     
     public function create_poli(){

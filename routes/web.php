@@ -32,4 +32,5 @@ Route::get('/admin-antrian/{id_lorong}',[App\Http\Controllers\PoliController::cl
 Route::get('/create-poli', [App\Http\Controllers\PoliController::class, 'create_poli'])->name('create-poli');
 Route::post('/store-poli', [App\Http\Controllers\PoliController::class, 'store_poli'])->name('store-poli');
 Route::post('/update-no-antri/{id_lorong}', [App\Http\Controllers\PoliController::class, 'updateNoAntri'])->name('update-no-antri');
+Route::post('/reset-no-antri/{id_lorong}', [App\Http\Controllers\PoliController::class, 'resetNoAntri'])->name('reset-no-antri');
 

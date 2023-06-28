@@ -7,6 +7,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>AdminAntrian</title>
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
@@ -34,9 +37,11 @@
       background-repeat: no-repeat;
       background-size: cover;
     }
+    
+    
   </style>
   <body>
-  <div class="wrapper">
+  <div class="wrapper container-fluid">
       <header class="py-5">
         <h1 class="display-5 fw-bold text-center" style="color: black;"></h1>
       </header>
@@ -45,17 +50,16 @@
                 <form method="GET" action="{{route('admin-poli', [$id_lorong])}}">
                     @csrf
                     <label style="font-size: 50px; color: white;">Cari Nama Dokter:</label>
-                    <div class="input-group" style="height: 60px;">
-                        <input type="text" class="form-control" name="nama_dokter" placeholder="Masukkan Nama Dokter" value=""style="height: 60px;" />
-                        <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary">Cari</button>
-                        </div>
-                    </div>
+                    <select class="form-control select2" style="width: 50%;" id="nama_dokter" name="nama_dokter" onchange="this.form.submit()">
+                        <option value="">Filter Berdasarkan Nama Dokter</option>
+                    @foreach ($list_dokter as $item)
+                        <option value="{{$item->nama_dokter}}" @if ($keyword != null && $item->nama_dokter == $keyword) selected @endif>{{$item->nama_dokter}}</option>
+                    @endforeach
+                    </select>
                 </form>
             </div>
         </div>
-
-      <div class="row">
+        <div class="row">
         @foreach($poli as $a)
                 <div class="col-md-4">
                     <div class="card card-widget widget-user">
@@ -70,15 +74,15 @@
                                 <h4 class="description-text centered-h1" id="no_antri{{$a->id}}" style="font-size: 150px;"></h4>
                             </div>
                         </div>
-                        
                         <div class="card-footer">
-                            <button class="btn btn-primary btn-block btn-next" data-lorong="{{$a->id}}">Next</button>
+                            <button class="btn btn-primary btn-block btn-next" data-lorong="{{$a->id}}">NEXT</button>
+                            <button class="btn btn-primary btn-block btn-danger" data-lorong="{{$a->id}}">RESET</button>
                         </div>
                     </div>
                 </div>
         @endforeach
-
-      </div>
+        </div>
+       
   </div>
     <!-- jQuery -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
@@ -90,6 +94,8 @@
     </script>
     <!-- Bootstrap 4 -->
     <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Select2 -->
+    <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
     <!-- ChartJS -->
     <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
     <!-- Sparkline -->
@@ -111,32 +117,48 @@
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
+    
 
+    <script>
+        $(function() {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+
+            })
+        });
+    </script>
 
     <script>
      $(document).ready(function() {
 
-         setInterval(function() {
- 
+        setInterval(function() {
         var keyword = $('input[name="nama_dokter"]').val(); // Mendapatkan nilai input dari form cari
-        $('.card-widget').each(function() {
-            var cardWidget = $(this);
-            var namaDokter = cardWidget.find('.nama_dokter').text().trim(); // Mendapatkan nilai nama_dokter pada elemen card-widget
-            if (namaDokter === keyword || keyword === '') {
-            var id_lorong = cardWidget.find('.id_lorong').val();
-            var url = "{{ route('cari-poli', ':id_lorong') }}".replace(':id_lorong', id_lorong);
-            $.ajax({
-                type: "GET",
-                url: url,
-                dataType: 'json',
-                success: function(res) {
-                $.each(res, function(index, item) {
-                    cardWidget.find('#no_antri' + item.id).text(item.no_antri);
+            $('.card-widget').each(function() {
+                var cardWidget = $(this);
+                var namaDokter = cardWidget.find('.nama_dokter').text().trim(); // Mendapatkan nilai nama_dokter pada elemen card-widget
+                
+                var id_lorong = cardWidget.find('.id_lorong').val();
+                var url = "{{ route('cari-poli', ':id_lorong') }}".replace(':id_lorong', id_lorong);
+                
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType: 'json',
+                    success: function(res) {
+                        $.each(res, function(index, item) {
+                            cardWidget.find('#no_antri' + item.id).text(item.no_antri);
+                        });
+                    }
                 });
+                
+                if (namaDokter === keyword || keyword === '') {
+                    // Tambahkan kode lain yang ingin Anda lakukan jika namaDokter cocok dengan keyword atau jika keyword kosong
                 }
             });
-            }
-        });
         }, 3000); // Mengatur waktu interval 3 detik (3000 milidetik)
 
 
@@ -150,6 +172,30 @@
             $.ajax({
                 type: "POST",
                 url: "{{ route('update-no-antri', ':id_lorong') }}".replace(':id_lorong', lorongID),
+                data: {
+                    _token: csrfToken, // Menambahkan token CSRF ke data permintaan
+                    lorongID: lorongID
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.success) {
+                        var nextAntri = res.no_antri;
+                        noAntriElement.text(nextAntri);
+                    }
+                }
+            });
+        });
+
+        $('.btn-danger').click(function() {
+            var button = $(this);
+            var lorongID = button.data('lorong');
+            var cardWidget = button.closest('.card-widget');
+            var noAntriElement = cardWidget.find('#no_antri' + lorongID);
+            var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Mendapatkan nilai token CSRF dari tag meta
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('reset-no-antri', ':id_lorong') }}".replace(':id_lorong', lorongID),
                 data: {
                     _token: csrfToken, // Menambahkan token CSRF ke data permintaan
                     lorongID: lorongID
