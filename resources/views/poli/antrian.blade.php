@@ -67,7 +67,7 @@
           @if ($poli->count() == 1)
               <div class="col-md-12">
                 <div class="card card-widget widget-user">
-                  <div class="widget-user-header bg-info" style="height: 300px;">
+                  <div class="widget-user-header bg-info" style="height: 250px;">
                     <input type="hidden" class="id_lorong" value="{{$a->master_lorong_id}}" />
                     <h1 class="widget-user-desc nama_poli" style="font-size: 100px;">{{$a->nama_poli}}</h1>
                     <h2 class="widget-user-desc nama_dokter" style="font-size: 100px;">{{$a->nama_dokter}}</h2>
@@ -83,15 +83,15 @@
           @elseif($poli->count() == 2)
               <div class="col-md-6">
                 <div class="card card-widget widget-user">
-                  <div class="widget-user-header bg-info" style="height: 160px;">
+                  <div class="widget-user-header bg-info" style="height: 180px;">
                     <input type="hidden" class="id_lorong" value="{{$a->master_lorong_id}}" />
-                    <h1 class="widget-user-desc nama_poli">{{$a->nama_poli}}</h1>
-                    <h2 class="widget-user-desc nama_dokter">{{$a->nama_dokter}}</h2>
+                    <h1 class="widget-user-desc nama_poli"style="font-size: 70px;">{{$a->nama_poli}}</h1>
+                    <h2 class="widget-user-desc nama_dokter"style="font-size: 60px;">{{$a->nama_dokter}}</h2>
                   </div>
                   <div class="card-footer">
                     <div class="description-block">
-                      <h3 class="description-text" style="text-align:center;">NOMOR ANTRIAN</h3>
-                      <h4 class="description-text centered-h1" id="no_antri{{$a->id}}" style="font-size: 150px;"></h4>
+                      <h3 class="description-text" style="text-align:center; height: 160px; font-size: 80px;">NOMOR ANTRIAN</h3>
+                      <h4 class="description-text centered-h1" id="no_antri{{$a->id}}" style="font-size: 200px;"></h4>
                     </div>
                   </div>
                 </div>
