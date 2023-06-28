@@ -193,25 +193,31 @@
             var noAntriElement = cardWidget.find('#no_antri' + lorongID);
             var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Mendapatkan nilai token CSRF dari tag meta
 
-            $.ajax({
-                type: "POST",
-                url: "{{ route('reset-no-antri', ':id_lorong') }}".replace(':id_lorong', lorongID),
-                data: {
-                    _token: csrfToken, // Menambahkan token CSRF ke data permintaan
-                    lorongID: lorongID
-                },
-                dataType: 'json',
-                success: function(res) {
-                    if (res.success) {
-                        var nextAntri = res.no_antri;
-                        noAntriElement.text(nextAntri);
+            // Tampilkan pemberitahuan konfirmasi
+            var confirmReset = confirm("Apakah Anda yakin ingin mereset nomor antrian?");
+
+            if (confirmReset) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('reset-no-antri', ':id_lorong') }}".replace(':id_lorong', lorongID),
+                    data: {
+                        _token: csrfToken, // Menambahkan token CSRF ke data permintaan
+                        lorongID: lorongID
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.success) {
+                            var nextAntri = res.no_antri;
+                            noAntriElement.text(nextAntri);
+                        }
                     }
-                }
-            });
+                });
+            }
         });
 
 
+
     });
-</script>    
- </body>
+    </script>    
+</body>
 </html>
