@@ -20,7 +20,7 @@ class PoliController extends BaseController
     }
 
     public function cari_poli($id_lorong)
-    {   
+    {
         $poli = DB::connection('mysql')
 
             ->table('antrian_poli')
@@ -33,7 +33,7 @@ class PoliController extends BaseController
     {
         // Lakukan logika untuk mendapatkan nomor antrian terbaru berdasarkan ID lorong
         $poli = Poli::find($idLorong);
-        
+
         if ($poli) {
             $noAntri = $poli->no_antri + 1;
             $poli->no_antri = $noAntri;
@@ -53,11 +53,11 @@ class PoliController extends BaseController
     {
         // Lakukan logika untuk mendapatkan nomor antrian terbaru berdasarkan ID lorong
         $poli = Poli::find($idLorong);
-        
+
         if ($poli) {
             $poli->no_antri = 0;
             $poli->save();
-            
+
 
             return response()->json([
                 'success' => true,
@@ -84,9 +84,9 @@ class PoliController extends BaseController
         return view('poli.admin', ['poli' => $poli, 'id_lorong' => $id_lorong, 'list_dokter' => $list_dokter, 'keyword' => $keyword]);
     }
 
-  
 
-    
+
+
     public function create_poli(){
         $poli = DB::connection('mysql')->table('antrian_poli');
         $lorong = DB::connection('mysql')->table('master_lorong')->get();
