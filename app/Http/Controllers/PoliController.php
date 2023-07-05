@@ -103,6 +103,26 @@ class PoliController extends BaseController
         return redirect()->back()->with('success', 'Data Antrian Poli Berhasil Disimpan!');
     }
 
+    public function cari_antrian($id_antrian){
+        $poli = Poli::find($id_antrian);
+
+        if ($poli) {
+            return response()->json([
+                'success' => true,
+                'no_antri' => $poli->no_antri
+            ]);
+        }
+
+        return response()->json([
+            'success' => false
+        ]);
+
+        return response()->json([
+            'success' => false
+        ]);
+    }
+    
+
 
 
 }

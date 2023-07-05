@@ -183,7 +183,8 @@
           @endforeach
         </div>
     </div>
-              
+    
+    <audio id="audioPlayer" src="{{ asset('mp3/silence.mp3') }}" loop></audio>
 
     <!-- jQuery -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
@@ -217,58 +218,85 @@
     <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 
-    
+    {{-- ==========================================socket==================================================================== --}}
+    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
     <script>
-      $(document).ready(function() {
-      var soundPlayed = false; // Set flag to true initially
+      const socket = io.connect('http://192.168.110.26:3030');
+      socket.on('order_processed', (data) => {
+          //ubah warna
+          var h1Element = document.querySelector('#no_antri' + data.item_id);
+          var footerElement = $(h1Element).closest('.card-footer');
+          footerElement.addClass('bg-pink'); // Add 'bg-pink' class to change the background color of the footer to pink
+          setTimeout(function() {
+            footerElement.removeClass('bg-pink'); // Remove 'bg-pink' class after 3 seconds
+          }, 3000);
 
-      function playSoundAutomatically() {
-        $('.card-widget').each(function() {
-          var cardWidget = $(this);
-          var id_lorong = cardWidget.find('.id_lorong').val();
-          var url = "{{route('cari-poli',':id_lorong')}}";
+          //ubah nilai
+          var id_antrian = data.item_id;
+          var url = "{{route('cari-antrian',':id_antrian')}}";
           $.ajax({
             type: "GET",
-            url: url.replace(':id_lorong', id_lorong),
+            url: url.replace(':id_antrian', id_antrian),
             dataType: 'json',
             success: function(res) {
-              $.each(res, function(index, item) {
-                var h1Element = document.querySelector('#no_antri' + item.id);
-                var previousContent = h1Element.textContent;
-                if (item.no_antri !== previousContent && !soundPlayed) {
-                  
-                  setTimeout(function() {
-                    playSound();
-                    soundPlayed = true;
-                  }, 1000);
-
-                  var footerElement = $(h1Element).closest('.card-footer');
-                  footerElement.addClass('bg-pink'); // Add 'bg-pink' class to change the background color of the footer to pink
-
-                  setTimeout(function() {
-                    footerElement.removeClass('bg-pink'); // Remove 'bg-pink' class after 3 seconds
-                  }, 3000);
-                  
-                }
-
-                cardWidget.find('#no_antri' + item.id).text(item.no_antri);
-              });
+              h1Element.textContent = res.no_antri;
             }
           });
-        });
-      }
-        // Set timeout to delay the first execution
-        setTimeout(function() {
-          soundPlayed = true; // Set flag to false before each iteration
-          playSoundAutomatically();
 
-          // Set interval of 3 seconds (3000 milliseconds) to automatically trigger sound playback
-          setInterval(function() {
-            soundPlayed = false; // Set flag back to false before each iteration
-            playSoundAutomatically();
-          }, 3000);
-        }, 3000);
+          // alert(`New order! ${data} from a user`);
+          playSound();
+          soundPlayed = true;
       });
+    </script>
+    {{-- ==========================================end socket==================================================================== --}}
+    {{-- ==========================================repeat hidden sound==================================================================== --}}
+    <script>
+      var audioPlayer = document.getElementById('audioPlayer');
+    
+      // Saat file MP3 selesai diputar, ulangi dari awal
+      audioPlayer.addEventListener('ended', function() {
+        audioPlayer.currentTime = 0;
+        audioPlayer.play();
+      });
+    
+      // Mulai pemutaran
+      audioPlayer.play();
+    </script>
+    {{-- ==========================================end repeat hidden sound==================================================================== --}}
+
+    <script>
+      $(document).ready(function() {
+        var soundPlayed = false; // Set flag to true initially
+
+        function playSoundAutomatically() {
+          $('.card-widget').each(function() {
+            var cardWidget = $(this);
+            var id_lorong = cardWidget.find('.id_lorong').val();
+            var url = "{{route('cari-poli',':id_lorong')}}";
+            $.ajax({
+              type: "GET",
+              url: url.replace(':id_lorong', id_lorong),
+              dataType: 'json',
+              success: function(res) {
+                $.each(res, function(index, item) {
+                  var h1Element = document.querySelector('#no_antri' + item.id);
+                  var previousContent = h1Element.textContent;
+                  cardWidget.find('#no_antri' + item.id).text(item.no_antri);
+                });
+              }
+            });
+          });
+        }
+
+        // Set timeout to delay the first execution
+        soundPlayed = true; // Set flag to false before each iteration
+        playSoundAutomatically();
+
+        soundPlayed = false; // Set flag back to false before each iteration
+        playSoundAutomatically();
+
+      });
+
       function playSound() {
           var audio = new Audio('{{ asset('assets/dist/img/bel.mp3') }}');
           audio.play();
