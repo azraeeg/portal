@@ -116,10 +116,6 @@ class PoliController extends BaseController
         return response()->json([
             'success' => false
         ]);
-
-        return response()->json([
-            'success' => false
-        ]);
     }
     
 

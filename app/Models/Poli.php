@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Poli extends Model
 {
     use HasFactory;
-    protected $connection = 'mysql';
+    protected $connection = 'sqlsrv1';
     protected $table = 'antrian_poli';
     public $timestamps = false;
     protected  $guarded = [];
