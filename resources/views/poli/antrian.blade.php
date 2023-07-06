@@ -221,7 +221,7 @@
     {{-- ==========================================socket==================================================================== --}}
     <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
     <script>
-      const socket = io.connect('http://192.168.110.26:3030');
+      const socket = io.connect('http://192.168.110.218:3030');
       socket.on('order_processed', (data) => {
           //ubah warna
           var h1Element = document.querySelector('#no_antri' + data.item_id);
