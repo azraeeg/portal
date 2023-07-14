@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>AdminAntrian</title>
+    <title>AdminKamar</title>
     <!-- Select2 -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
@@ -47,41 +47,47 @@
       </header>
         <div class="col-md-6">
             <div class="form-group">
-                <form method="GET" action="{{route('admin-poli', [$id_lorong])}}">
+                <form method="GET" action="{{route('admin-kamar', [$kode_ruang])}}">
                     @csrf
-                    <label style="font-size: 50px; color: white;">Cari Nama Dokter:</label>
-                    <select class="form-control select2" style="width: 50%;" id="nama_dokter" name="nama_dokter" onchange="this.form.submit()">
-                        <option value="">Filter Berdasarkan Nama Dokter</option>
-                    @foreach ($list_dokter as $item)
-                        <option value="{{$item->nama_dokter}}" @if ($keyword != null && $item->nama_dokter == $keyword) selected @endif>{{$item->nama_dokter}}</option>
+                    <label style="font-size: 50px; color: white;">Cari Nama Kamar:</label>
+                    <select class="form-control select2" style="width: 50%;" id="namakamar" name="namakamar" onchange="this.form.submit()">
+                        <option value="">Filter Berdasarkan Nama Kamar</option>
+                    @foreach ($list_kamar as $item)
+                        <option value="{{$item->namakamar}}" @if ($keyword != null && $item->namakamar == $keyword) selected @endif>{{$item->namakamar}}</option>
                     @endforeach
                     </select>
                 </form>
             </div>
         </div>
         <div class="row">
-        @foreach($poli as $a)
+        @foreach($kamar as $a)
                 <div class="col-md-4">
                     <div class="card card-widget widget-user">
                         <div class="widget-user-header bg-info" style="height: 160px;">
-                        <input type="hidden" class="id_lorong" value="{{$a->master_lorong_id}}"/>
-                            <h1 class="widget-user-desc nama_poli">{{$a->nama_poli}}</h1>
-                            <h2 class="widget-user-desc nama_dokter">{{$a->nama_dokter}}</h2>
+                        <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}"/>
+                            <h1 class="widget-user-desc namakamar">{{$a->namakamar}}</h1>
+                            <h2 class="widget-user-desc kelas">{{$a->kelas}}</h2>
                         </div>
                         <div class="card-footer">
                             <div class="description-block">
-                                <h3 class="description-text" style="text-align:center;">NOMOR ANTRIAN</h3>
-                                <h4 class="description-text centered-h1" id="no_antri{{$a->id}}" style="font-size: 150px;"></h4>
+                                <h3 class="description-text" style="text-align:center;">STATUS</h3>
+                                <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 150px;"></h4>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <button data-id="{{  $a->id }}" class="btn btn-primary btn-block btn-next" data-lorong="{{$a->id}}">NEXT</button>
-                            <button data-id="{{  $a->id }}" class="btn btn-primary btn-block btn-danger" data-lorong="{{$a->id}}">RESET</button>
+                            <div class="form-group">
+                          <select class="form-control select" style="width: 100%;">
+                              <option selected="selected">Ganti Status</option>
+                              <option>Terisi</option>
+                              <option>Kosong</option>
+                              <option>Belum Siap</option>
+                              <option>Tutup</option>
+                          </select>
+                      </div>
                         </div>
                     </div>
                 </div>
         @endforeach
         </div>
+        
        
   </div>
     <!-- jQuery -->
@@ -147,86 +153,55 @@
     </script>
 
     <script>
-    $(document).ready(function() {
-
-        var keyword = $('input[name="nama_dokter"]').val(); // Mendapatkan nilai input dari form cari
+        $(document).ready(function() {
+        function statusKamar() {
             $('.card-widget').each(function() {
-                var cardWidget = $(this);
-                var namaDokter = cardWidget.find('.nama_dokter').text().trim(); // Mendapatkan nilai nama_dokter pada elemen card-widget
-                
-                var id_lorong = cardWidget.find('.id_lorong').val();
-                var url = "{{ route('cari-poli', ':id_lorong') }}".replace(':id_lorong', id_lorong);
-                
-                $.ajax({
-                    type: "GET",
-                    url: url,
-                    dataType: 'json',
-                    success: function(res) {
-                        $.each(res, function(index, item) {
-                            cardWidget.find('#no_antri' + item.id).text(item.no_antri);
-                        });
-                    }
-                });
-                
-                if (namaDokter === keyword || keyword === '') {
-                    // Tambahkan kode lain yang ingin Anda lakukan jika namaDokter cocok dengan keyword atau jika keyword kosong
-                }
-            });
-
-        $('.btn-next').click(function() {
-            var button = $(this);
-            var lorongID = button.data('lorong');
-            var cardWidget = button.closest('.card-widget');
-            var noAntriElement = cardWidget.find('#no_antri' + lorongID);
-            var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Mendapatkan nilai token CSRF dari tag meta
+            var cardWidget = $(this);
+            var kode_ruang = cardWidget.find('.kode_ruang').val();
+            var url = "{{route('cari-kamar',':kode_ruang')}}";
 
             $.ajax({
-                type: "POST",
-                url: "{{ route('update-no-antri', ':id_lorong') }}".replace(':id_lorong', lorongID),
-                data: {
-                    _token: csrfToken, // Menambahkan token CSRF ke data permintaan
-                    lorongID: lorongID
-                },
+                type: "GET",
+                url: url.replace(':kode_ruang', kode_ruang),
                 dataType: 'json',
                 success: function(res) {
-                    if (res.success) {
-                        var nextAntri = res.no_antri;
-                        noAntriElement.text(nextAntri);
-                    }
-                }
-            });
-        });
-
-        $('.btn-danger').click(function() {
-            var button = $(this);
-            var lorongID = button.data('lorong');
-            var cardWidget = button.closest('.card-widget');
-            var noAntriElement = cardWidget.find('#no_antri' + lorongID);
-            var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Mendapatkan nilai token CSRF dari tag meta
-
-            // Tampilkan pemberitahuan konfirmasi
-            var confirmReset = confirm("Apakah Anda yakin ingin mereset nomor antrian?");
-
-            if (confirmReset) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('reset-no-antri', ':id_lorong') }}".replace(':id_lorong', lorongID),
-                    data: {
-                        _token: csrfToken, // Menambahkan token CSRF ke data permintaan
-                        lorongID: lorongID
-                    },
-                    dataType: 'json',
-                    success: function(res) {
-                        if (res.success) {
-                            var nextAntri = res.no_antri;
-                            noAntriElement.text(nextAntri);
-                        }
+                $.each(res, function(index, item) {
+                    var h1Element = document.querySelector('#status' + item.id);
+                    var previousContent = h1Element.textContent;
+                    if (item.no_antri !== previousContent) {
+                    cardWidget.find('#status' + item.id).text(item.status);
                     }
                 });
-            }
+                }
+            });
+            });
+        }
         });
+    // $(document).ready(function() {
 
-    });
+    //     var keyword = $('input[name="nama_dokter"]').val(); // Mendapatkan nilai input dari form cari
+    //         $('.card-widget').each(function() {
+    //             var cardWidget = $(this);
+    //             var namaDokter = cardWidget.find('.nama_dokter').text().trim(); // Mendapatkan nilai nama_dokter pada elemen card-widget
+                
+    //             var id_lorong = cardWidget.find('.id_lorong').val();
+    //             var url = "{{ route('cari-poli', ':id_lorong') }}".replace(':id_lorong', id_lorong);
+                
+    //             $.ajax({
+    //                 type: "GET",
+    //                 url: url,
+    //                 dataType: 'json',
+    //                 success: function(res) {
+    //                     $.each(res, function(index, item) {
+    //                         cardWidget.find('#no_antri' + item.id).text(item.no_antri);
+    //                     });
+    //                 }
+    //             });
+                
+    //             if (namaDokter === keyword || keyword === '') {
+    //                 // Tambahkan kode lain yang ingin Anda lakukan jika namaDokter cocok dengan keyword atau jika keyword kosong
+    //             }
+    //         });
     </script>    
 </body>
 </html>

@@ -38,3 +38,5 @@ Route::post('/reset-no-antri/{id_lorong}', [App\Http\Controllers\PoliController:
 // ===========================kamar==================
 Route::get('/info-kamar/{kode_ruang}', [App\Http\Controllers\KamarController::class, 'kamar'])->name('kamar-list');
 Route::get('/json-status/{id_status}',[App\Http\Controllers\KamarController::class, 'cari_status'])->name('cari-status');
+Route::get('/admin-kamar/{kode_ruang}',[App\Http\Controllers\KamarController::class, 'kamar_admin'])->name('admin-kamar');
+Route::get('/json-kamar/{kode_ruang}',[App\Http\Controllers\KamarController::class, 'cari_kamar'])->name('cari-kamar');

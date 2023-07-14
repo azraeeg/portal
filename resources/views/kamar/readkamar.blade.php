@@ -49,7 +49,9 @@
         <header class="py-5">
           <h1 class="display-5 fw-bold text-center" style="color: white;font-size: 100px ;">INFORMASI KAMAR RSI KENDAL</h1>
         </header>
+        
         <div class="row">
+        
           @foreach($kamar as $a)
             @if ($kamar->count() == 1)
                 <div class="col-md-12">
@@ -167,14 +169,14 @@
                 <div class="col-md-3">
                   <div class="card card-widget widget-user">
                     <div class="widget-user-header bg-info" style="height: 160px;">
-                      <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}" />
+                      <input type="hidden" class="kode_ruang" id="kode_ruang" value="{{$a->kodekategori}}" />
                       <h1 class="widget-user-desc namakamar">{{$a->namakamar}}</h1>
                       <h2 class="widget-user-desc kelas">{{$a->kelas}}</h2>
                     </div>
                     <div class="card-footer">
                       <div class="description-block">
                         <h3 class="description-text" style="text-align:center;">STATUS</h3>
-                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 150px;"></h4>
+                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 100px;"></h4>
                       </div>
                     </div>
                   </div>
@@ -232,23 +234,39 @@
             dataType: 'json',
             success: function(res) {
               h1Element.textContent = res.status;
+
             }
+            
           });
           
       });
     </script>
     {{-- ==========================================end socket==================================================================== --}}
     <script>
-        // var id_status = data.item_id;
-        //   var url = "{{route('cari-status',':id_status')}}";
-        //   $.ajax({
-        //     type: "GET",
-        //     url: url.replace(':id_status', id_status),
-        //     dataType: 'json',
-        //     success: function(res) {
-        //       h1Element.textContent = res.status;
-        //     }
-        //   });
+        $(document).ready(function() {
+            
+        $('.card-widget').each(function() {
+            var cardWidget = $(this);
+            var kode_ruang = $("input[id=kode_ruang]").val();
+            var url = "{{route('cari-kamar',':kode_ruang')}}";
+
+            $.ajax({
+                type: "GET",
+                url: url.replace(':kode_ruang', kode_ruang),
+                dataType: 'json',
+                success: function(res) {
+                $.each(res, function(index, item) {
+                    var h1Element = document.querySelector('#status' + item.id);
+                    var previousContent = h1Element.textContent;
+                    if (item.status !== previousContent) {
+                    cardWidget.find('#status' + item.id).text(item.status);
+                    }
+                });
+                }
+            });
+            });
+        
+        });
     </script>
   </body>
 </html>
