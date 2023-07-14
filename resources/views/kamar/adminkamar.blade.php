@@ -75,8 +75,8 @@
                             </div>
                         </div>
                         <div class="card-footer">
-                            <button class="btn btn-primary btn-block btn-next" data-lorong="{{$a->id}}">NEXT</button>
-                            <button class="btn btn-primary btn-block btn-danger" data-lorong="{{$a->id}}">RESET</button>
+                            <button data-id="{{  $a->id }}" class="btn btn-primary btn-block btn-next" data-lorong="{{$a->id}}">NEXT</button>
+                            <button data-id="{{  $a->id }}" class="btn btn-primary btn-block btn-danger" data-lorong="{{$a->id}}">RESET</button>
                         </div>
                     </div>
                 </div>
@@ -118,7 +118,21 @@
     <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
     
-
+    {{-- ==========================================socket==================================================================== --}}
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    <script>
+        const socket = io.connect('http://192.168.110.218:3030');
+        document.addEventListener('click', (e) => {
+            if(e.target.tagName.toLowerCase() === 'button' && e.target.getAttribute('data-id')) {
+                const itemID = e.target.getAttribute('data-id');
+                socket.emit('order', {
+                    item_id : itemID,
+                })
+            }
+        });
+    </script>
+    {{-- ==========================================end socket==================================================================== --}}
+    
     <script>
         $(function() {
             //Initialize Select2 Elements
@@ -133,9 +147,8 @@
     </script>
 
     <script>
-     $(document).ready(function() {
+    $(document).ready(function() {
 
-        setInterval(function() {
         var keyword = $('input[name="nama_dokter"]').val(); // Mendapatkan nilai input dari form cari
             $('.card-widget').each(function() {
                 var cardWidget = $(this);
@@ -159,8 +172,6 @@
                     // Tambahkan kode lain yang ingin Anda lakukan jika namaDokter cocok dengan keyword atau jika keyword kosong
                 }
             });
-        }, 1000); // Mengatur waktu interval 3 detik (3000 milidetik)
-
 
         $('.btn-next').click(function() {
             var button = $(this);
@@ -214,8 +225,6 @@
                 });
             }
         });
-
-
 
     });
     </script>    

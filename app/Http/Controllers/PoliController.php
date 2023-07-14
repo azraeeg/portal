@@ -83,26 +83,7 @@ class PoliController extends BaseController
         $list_dokter = Poli::get();
         return view('poli.admin', ['poli' => $poli, 'id_lorong' => $id_lorong, 'list_dokter' => $list_dokter, 'keyword' => $keyword]);
     }
-
-
-
-
-    public function create_poli(){
-        $poli = DB::connection('sqlsrv1')->table('antrian_poli');
-        $lorong = DB::connection('sqlsrv1')->table('master_lorong')->get();
-        return view('poli.create', compact('poli' , 'lorong'));
-    }
-
-    public function store_poli(Request $request)
-    {
-        DB::connection('sqlsrv1')->table('antrian_poli')->insert([
-            'nama_dokter' => $request->nama_dokter,
-            'nama_poli' => $request->nama_poli,
-            'master_lorong_id' => $request->nama_lorong,
-        ]);
-        return redirect()->back()->with('success', 'Data Antrian Poli Berhasil Disimpan!');
-    }
-
+    
     public function cari_antrian($id_antrian){
         $poli = Poli::find($id_antrian);
 
@@ -117,8 +98,22 @@ class PoliController extends BaseController
             'success' => false
         ]);
     }
+
+    // public function create_poli(){
+    //     $poli = DB::connection('sqlsrv1')->table('antrian_poli');
+    //     $lorong = DB::connection('sqlsrv1')->table('master_lorong')->get();
+    //     return view('poli.create', compact('poli' , 'lorong'));
+    // }
+
+    // public function store_poli(Request $request)
+    // {
+    //     DB::connection('sqlsrv1')->table('antrian_poli')->insert([
+    //         'nama_dokter' => $request->nama_dokter,
+    //         'nama_poli' => $request->nama_poli,
+    //         'master_lorong_id' => $request->nama_lorong,
+    //     ]);
+    //     return redirect()->back()->with('success', 'Data Antrian Poli Berhasil Disimpan!');
+    // }
     
-
-
-
+        
 }
