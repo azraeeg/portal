@@ -7,6 +7,9 @@
 
       <title>Kamar</title>
       
+
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
       <!-- Google Font: Source Sans Pro -->
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
       <!-- Font Awesome -->
@@ -33,7 +36,7 @@
             height: 100vh;
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            overflow: ;
           }
       </style>
     </head>
@@ -50,143 +53,27 @@
           <h1 class="display-5 fw-bold text-center" style="color: white;font-size: 100px ;">INFORMASI KAMAR RSI KENDAL</h1>
         </header>
         
-        <div class="row">
-        
+        <div class="row" id="slideShow">
           @foreach($kamar as $a)
-            @if ($kamar->count() == 1)
-                <div class="col-md-12">
-                  <div class="card card-widget widget-user">
-                    <div class="widget-user-header bg-info" style="height: 270px;">
-                      <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}" />
-                      <h1 class="widget-user-desc namakamar" style="font-size: 100px;">{{$a->namakamar}}</h1>
-                      <h2 class="widget-user-desc kelas" style="font-size: 100px;">{{$a->kelas}}</h2>
-                    </div>
-                    <div class="card-footer" style="height: 700px">
-                      <div class="description-block">
-                        <h3 class="description-text" style="text-align:center; font-size: 80px;">STATUS</h3>
-                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 500px;"></h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            @elseif($kamar->count() == 2)
-                <div class="col-md-6">
-                  <div class="card card-widget widget-user">
-                    <div class="widget-user-header bg-info" style="height: 180px;">
-                      <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}" />
-                      <h1 class="widget-user-desc namakamar"style="font-size: 70px;">{{$a->namakamar}}</h1>
-                      <h2 class="widget-user-desc kelas"style="font-size: 60px;">{{$a->kelas}}</h2>
-                    </div>
-                    <div class="card-footer">
-                      <div class="description-block">
-                        <h3 class="description-text" style="text-align:center; height: 160px; font-size: 80px;">STATUS</h3>
-                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 200px;"></h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            @elseif($kamar->count() == 3)
-                <div class="col-md-4">
-                  <div class="card card-widget widget-user">
-                    <div class="widget-user-header bg-info" style="height: 160px;">
-                      <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}" />
-                      <h1 class="widget-user-desc namakamar">{{$a->namakamar}}</h1>
-                      <h2 class="widget-user-desc kelas">{{$a->kelas}}</h2>
-                    </div>
-                    <div class="card-footer">
-                      <div class="description-block">
-                        <h3 class="description-text" style="text-align:center;">STATUS</h3>
-                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 150px;"></h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            @elseif($kamar->count() == 4)
                 <div class="col-md-3">
                   <div class="card card-widget widget-user">
-                    <div class="widget-user-header bg-info" style="height: 160px;">
-                      <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}" />
-                      <h1 class="widget-user-desc namakamar">{{$a->namakamar}}</h1>
-                      <h2 class="widget-user-desc kelas">{{$a->kelas}}</h2>
-                    </div>
-                    <div class="card-footer">
-                      <div class="description-block">
-                        <h3 class="description-text" style="text-align:center;">STATUS</h3>
-                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 150px;"></h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            @elseif($kamar->count() == 5)
-                <div class="col-md-3">
-                  <div class="card card-widget widget-user">
-                    <div class="widget-user-header bg-info" style="height: 160px;">
-                      <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}" />
-                      <h1 class="widget-user-desc namakamar">{{$a->namakamar}}</h1>
-                      <h2 class="widget-user-desc kelas">{{$a->kelas}}</h2>
-                    </div>
-                    <div class="card-footer">
-                      <div class="description-block">
-                        <h3 class="description-text" style="text-align:center;">STATUS</h3>
-                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 150px;"></h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            @elseif($kamar->count() == 6)
-                <div class="col-md-3">
-                  <div class="card card-widget widget-user">
-                    <div class="widget-user-header bg-info" style="height: 160px;">
-                      <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}" />
-                      <h1 class="widget-user-desc namakamar">{{$a->namakamar}}</h1>
-                      <h2 class="widget-user-desc kelas">{{$a->kelas}}</h2>
-                    </div>
-                    <div class="card-footer">
-                      <div class="description-block">
-                        <h3 class="description-text" style="text-align:center;">STATUS</h3>
-                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 150px;"></h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            @elseif($kamar->count() == 7)
-                <div class="col-md-3">
-                  <div class="card card-widget widget-user">
-                    <div class="widget-user-header bg-info" style="height: 160px;">
-                      <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}" />
-                      <h1 class="widget-user-desc namakamar">{{$a->namakamar}}</h1>
-                      <h2 class="widget-user-desc kelas">{{$a->kelas}}</h2>
-                    </div>
-                    <div class="card-footer">
-                      <div class="description-block">
-                        <h3 class="description-text" style="text-align:center;">STATUS</h3>
-                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 150px;"></h4>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            @elseif($kamar->count() == 8)
-                <div class="col-md-3">
-                  <div class="card card-widget widget-user">
-                    <div class="widget-user-header bg-info" style="height: 160px;">
+                    <div class="widget-user-header bg-info" style="height: 170px;">
                       <input type="hidden" class="kode_ruang" id="kode_ruang" value="{{$a->kodekategori}}" />
-                      <h1 class="widget-user-desc namakamar">{{$a->namakamar}}</h1>
-                      <h2 class="widget-user-desc kelas">{{$a->kelas}}</h2>
+                      <h1 class="widget-user-desc namakamar" style="font-size: 70px;">{{$a->namakamar}}</h1>
+                      <h2 class="widget-user-desc kelas" style="font-size: 50px;">{{$a->kelas}}</h2>
                     </div>
                     <div class="card-footer">
                       <div class="description-block">
-                        <h3 class="description-text" style="text-align:center;">STATUS</h3>
-                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 100px;"></h4>
+                        <h3 class="description-text" style="text-align:center; font-size: 50px;" >STATUS</h3>
+                        <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 70px;"></h4>
                       </div>
                     </div>
                   </div>
                 </div>
-            @endif
           @endforeach
         </div>
+        </div>
     </div>
-    
-    <audio id="audioPlayer" src="{{ asset('mp3/silence.mp3') }}" loop></audio>
 
     <!-- jQuery -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
@@ -221,27 +108,83 @@
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 
     {{-- ==========================================socket==================================================================== --}}
-    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
     <script>
-      const socket = io.connect('http://192.168.110.218:3030');
-      socket.on('order_processed', (data) => {
-
-        var id_status = data.item_id;
-          var url = "{{route('cari-status',':id_status')}}";
-          $.ajax({
-            type: "GET",
-            url: url.replace(':id_status', id_status),
-            dataType: 'json',
-            success: function(res) {
-              h1Element.textContent = res.status;
-
+        const socket = io.connect('http://192.168.110.218:3030');
+        document.addEventListener('click', (e) => {
+            if(e.target.tagName.toLowerCase() === 'button' && e.target.getAttribute('data-id')) {
+                const itemID = e.target.getAttribute('data-id');
+                socket.emit('order', {
+                    item_id : itemID,
+                })
             }
-            
-          });
-          
-      });
-    </script>
+        });
+    </script> -->
     {{-- ==========================================end socket==================================================================== --}}
+    
+
+
+    {{-- ==========================================auto slide==================================================================== --}}
+    <script>
+      // Fungsi untuk mengatur slide show otomatis
+      function slideShow() {
+        // Mengambil elemen row dan elemen card
+        var row = document.getElementById('slideShow');
+        var cards = row.getElementsByClassName('col-md-3');
+        
+        // Menyimpan jumlah kartu yang ada
+        var cardCount = cards.length;
+        
+        // Mengatur waktu perpindahan slide (dalam milidetik)
+        var slideInterval = 3000;
+        
+        // Mengatur indeks awal
+        var currentCardIndex = 0;
+        
+        // Fungsi untuk menampilkan slide berikutnya
+        function showNextCards() {
+          // Menyembunyikan semua kartu
+          for (var i = 0; i < cardCount; i++) {
+            cards[i].style.display = 'none';
+          }
+          
+          // Menentukan indeks awal dan akhir kartu yang akan ditampilkan pada slide ini
+          var startCardIndex = currentCardIndex;
+          var endCardIndex = currentCardIndex + 7; // Menampilkan 8 kartu
+          
+          // Memastikan indeks kartu yang ditampilkan tidak melampaui jumlah kartu yang ada
+          if (endCardIndex >= cardCount) {
+            endCardIndex = cardCount - 1;
+          }
+          
+          // Menampilkan kartu-kartu yang ditentukan
+          for (var j = startCardIndex; j <= endCardIndex; j++) {
+            cards[j].style.display = 'block';
+          }
+          
+          // Memperbarui indeks kartu berikutnya
+          currentCardIndex = endCardIndex + 1;
+          
+          // Jika sudah mencapai kartu terakhir, kembali ke kartu pertama
+          if (currentCardIndex >= cardCount) {
+            currentCardIndex = 0;
+          }
+          
+          // Mengatur waktu perpindahan slide berikutnya
+          setTimeout(showNextCards, slideInterval);
+        }
+        
+        // Memulai slide show pertama kali
+        showNextCards();
+      }
+      
+      // Memanggil fungsi slideShow setelah dokumen selesai dimuat
+      window.onload = slideShow;
+    </script>
+    {{-- ==========================================end auto slide==================================================================== --}}
+    
+
+
     <script>
         $(document).ready(function() {
             
@@ -267,6 +210,7 @@
             });
         
         });
-    </script>
+        </script>
+    
   </body>
 </html>

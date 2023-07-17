@@ -60,36 +60,34 @@
             </div>
         </div>
         <div class="row">
-        @foreach($kamar as $a)
-                <div class="col-md-4">
+            @foreach($kamar as $a)
+                <div class="col-md-3">
                     <div class="card card-widget widget-user">
-                        <div class="widget-user-header bg-info" style="height: 160px;">
-                        <input type="hidden" class="kode_ruang" value="{{$a->kodekategori}}"/>
-                            <h1 class="widget-user-desc namakamar">{{$a->namakamar}}</h1>
-                            <h2 class="widget-user-desc kelas">{{$a->kelas}}</h2>
+                        <div class="widget-user-header bg-info" style="height: 170px;">
+                            <input type="hidden" class="kode_ruang" id="kode_ruang" value="{{$a->kodekategori}}" />
+                            <h1 class="widget-user-desc namakamar" style="font-size: 70px;">{{$a->namakamar}}</h1>
+                            <h2 class="widget-user-desc kelas" style="font-size: 50px;">{{$a->kelas}}</h2>
                         </div>
                         <div class="card-footer">
                             <div class="description-block">
-                                <h3 class="description-text" style="text-align:center;">STATUS</h3>
-                                <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 150px;"></h4>
+                                <h3 class="description-text" style="text-align:center; font-size: 50px;" >STATUS</h3>
+                                <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 70px;"></h4>
                             </div>
                             <div class="form-group">
-                          <select class="form-control select" style="width: 100%;">
-                              <option selected="selected">Ganti Status</option>
-                              <option>Terisi</option>
-                              <option>Kosong</option>
-                              <option>Belum Siap</option>
-                              <option>Tutup</option>
-                          </select>
-                      </div>
+                                <select class="form-control select" style="width: 100%;">
+                                    <option selected="selected">Ganti Status</option>
+                                    <option>Terisi</option>
+                                    <option>Kosong</option>
+                                    <option>Belum Siap</option>
+                                    <option>Tutup</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-        @endforeach
+            @endforeach
         </div>
-        
-       
-  </div>
+
     <!-- jQuery -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
     <!-- jQuery UI 1.11.4 -->
@@ -125,7 +123,7 @@
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
     
     {{-- ==========================================socket==================================================================== --}}
-    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
     <script>
         const socket = io.connect('http://192.168.110.218:3030');
         document.addEventListener('click', (e) => {
@@ -136,9 +134,11 @@
                 })
             }
         });
-    </script>
+    </script> -->
     {{-- ==========================================end socket==================================================================== --}}
     
+    
+    {{-- ==========================================combobox==================================================================== --}}
     <script>
         $(function() {
             //Initialize Select2 Elements
@@ -151,57 +151,34 @@
             })
         });
     </script>
-
+    {{-- ==========================================end combobox==================================================================== --}}
+    
     <script>
         $(document).ready(function() {
-        function statusKamar() {
+            
             $('.card-widget').each(function() {
-            var cardWidget = $(this);
-            var kode_ruang = cardWidget.find('.kode_ruang').val();
-            var url = "{{route('cari-kamar',':kode_ruang')}}";
-
-            $.ajax({
-                type: "GET",
-                url: url.replace(':kode_ruang', kode_ruang),
-                dataType: 'json',
-                success: function(res) {
-                $.each(res, function(index, item) {
-                    var h1Element = document.querySelector('#status' + item.id);
-                    var previousContent = h1Element.textContent;
-                    if (item.no_antri !== previousContent) {
-                    cardWidget.find('#status' + item.id).text(item.status);
+                var cardWidget = $(this);
+                var kode_ruang = $("input[id=kode_ruang]").val();
+                var url = "{{route('cari-kamar',':kode_ruang')}}";
+    
+                console.log(kode_ruang);
+                $.ajax({
+                    type: "GET",
+                    url: url.replace(':kode_ruang', kode_ruang),
+                    dataType: 'json',
+                    success: function(res) {
+                    $.each(res, function(index, item) {
+                        var h1Element = document.querySelector('#status' + item.id);
+                        var previousContent = h1Element.textContent;
+                        if (item.status !== previousContent) {
+                        cardWidget.find('#status' + item.id).text(item.status);
+                        }
+                    });
                     }
                 });
-                }
-            });
-            });
-        }
+                });
         });
-    // $(document).ready(function() {
-
-    //     var keyword = $('input[name="nama_dokter"]').val(); // Mendapatkan nilai input dari form cari
-    //         $('.card-widget').each(function() {
-    //             var cardWidget = $(this);
-    //             var namaDokter = cardWidget.find('.nama_dokter').text().trim(); // Mendapatkan nilai nama_dokter pada elemen card-widget
-                
-    //             var id_lorong = cardWidget.find('.id_lorong').val();
-    //             var url = "{{ route('cari-poli', ':id_lorong') }}".replace(':id_lorong', id_lorong);
-                
-    //             $.ajax({
-    //                 type: "GET",
-    //                 url: url,
-    //                 dataType: 'json',
-    //                 success: function(res) {
-    //                     $.each(res, function(index, item) {
-    //                         cardWidget.find('#no_antri' + item.id).text(item.no_antri);
-    //                     });
-    //                 }
-    //             });
-                
-    //             if (namaDokter === keyword || keyword === '') {
-    //                 // Tambahkan kode lain yang ingin Anda lakukan jika namaDokter cocok dengan keyword atau jika keyword kosong
-    //             }
-    //         });
+    
     </script>    
 </body>
 </html>
