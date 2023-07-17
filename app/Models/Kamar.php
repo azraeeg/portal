@@ -9,7 +9,7 @@ class Kamar extends Model
 {
     use HasFactory;
     protected $connection = 'sqlsrv1';
-    protected $table = 'antrian_poli';
+    protected $table = 'bpjs_kamar_detail';
     public $timestamps = false;
     protected  $guarded = [];
 

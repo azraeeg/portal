@@ -41,7 +41,7 @@
     
   </style>
   <body>
-  <div class="wrapper container-fluid">
+    <div class="wrapper container-fluid">
       <header class="py-5">
         <h1 class="display-5 fw-bold text-center" style="color: black;"></h1>
       </header>
@@ -61,8 +61,8 @@
         </div>
         <div class="row">
             @foreach($kamar as $a)
-                <div class="col-md-3">
-                    <div class="card card-widget widget-user">
+                <div class="col-md-4">
+                    <div class="card card-widget widget-user" data-id="{{$a->id}}">
                         <div class="widget-user-header bg-info" style="height: 170px;">
                             <input type="hidden" class="kode_ruang" id="kode_ruang" value="{{$a->kodekategori}}" />
                             <h1 class="widget-user-desc namakamar" style="font-size: 70px;">{{$a->namakamar}}</h1>
@@ -74,12 +74,12 @@
                                 <h4 class="description-text centered-h1" id="status{{$a->id}}" style="font-size: 70px;"></h4>
                             </div>
                             <div class="form-group">
-                                <select class="form-control select" style="width: 100%;">
-                                    <option selected="selected">Ganti Status</option>
-                                    <option>Terisi</option>
-                                    <option>Kosong</option>
-                                    <option>Belum Siap</option>
-                                    <option>Tutup</option>
+                                <select class="form-control select select-status" data-id="{{  $a->id }}" style="width: 100%;" id="statusSelect{{$a->id}}">
+                                    <option selected disabled>GANTI STATUS</option>
+                                    <option data-id="{{  $a->id }}">TERISI</option>
+                                    <option data-id="{{  $a->id }}">KOSONG</option>
+                                    <option data-id="{{  $a->id }}">BELUM SIAP</option>
+                                    <option data-id="{{  $a->id }}">TUTUP</option>
                                 </select>
                             </div>
                         </div>
@@ -87,6 +87,7 @@
                 </div>
             @endforeach
         </div>
+    </div>
 
     <!-- jQuery -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
@@ -122,23 +123,23 @@
     <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
     
-    {{-- ==========================================socket==================================================================== --}}
-    <!-- <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+{{-- ==========================================socket==================================================================== --}}
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
     <script>
         const socket = io.connect('http://192.168.110.218:3030');
         document.addEventListener('click', (e) => {
-            if(e.target.tagName.toLowerCase() === 'button' && e.target.getAttribute('data-id')) {
+            if(e.target.tagName.toLowerCase() === 'select' && e.target.getAttribute('data-id')) {
                 const itemID = e.target.getAttribute('data-id');
-                socket.emit('order', {
+                socket.emit('orderkmr', {
                     item_id : itemID,
                 })
             }
         });
-    </script> -->
-    {{-- ==========================================end socket==================================================================== --}}
+    </script>
+{{-- ==========================================end socket==================================================================== --}}
     
     
-    {{-- ==========================================combobox==================================================================== --}}
+{{-- ==========================================combobox==================================================================== --}}
     <script>
         $(function() {
             //Initialize Select2 Elements
@@ -151,7 +152,7 @@
             })
         });
     </script>
-    {{-- ==========================================end combobox==================================================================== --}}
+{{-- ==========================================end combobox==================================================================== --}}
     
     <script>
         $(document).ready(function() {
@@ -161,24 +162,58 @@
                 var kode_ruang = $("input[id=kode_ruang]").val();
                 var url = "{{route('cari-kamar',':kode_ruang')}}";
     
-                console.log(kode_ruang);
+                
                 $.ajax({
                     type: "GET",
                     url: url.replace(':kode_ruang', kode_ruang),
                     dataType: 'json',
                     success: function(res) {
                     $.each(res, function(index, item) {
-                        var h1Element = document.querySelector('#status' + item.id);
-                        var previousContent = h1Element.textContent;
-                        if (item.status !== previousContent) {
                         cardWidget.find('#status' + item.id).text(item.status);
-                        }
                     });
                     }
                 });
                 });
         });
     
-    </script>    
+    </script>   
+{{-- ==========================================update status==================================================================== --}}
+    
+    <script>
+        $(document).ready(function() {
+        $('.select-status').change(function() {
+            var selectElement = $(this);
+            var cardWidget = selectElement.closest('.card-widget');
+            var kamarID = cardWidget.data('id');
+            var newStatus = selectElement.val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+            type: "POST",
+            url: "{{ route('update-status', ':kode_ruang') }}".replace(':kode_ruang', kamarID),
+            data: {
+                _token: csrfToken,
+                kamarID: kamarID,
+                newStatus: newStatus
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                // Berhasil memperbarui status
+                var statusElement = cardWidget.find('#status' + kamarID);
+                statusElement.text(response.newStatus);
+                }
+            },
+            error: function(xhr, status, error) {
+                // Error handling
+                console.log(xhr.responseText);
+            }
+            });
+        });
+        });
+    </script>
+{{-- ==========================================end update status==================================================================== --}}
+     
+
 </body>
 </html>

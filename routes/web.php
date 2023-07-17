@@ -41,3 +41,7 @@ Route::get('/info-kamar/{kode_ruang}', [App\Http\Controllers\KamarController::cl
 Route::get('/json-status/{id_status}',[App\Http\Controllers\KamarController::class, 'cari_status'])->name('cari-status');
 Route::get('/admin-kamar/{kode_ruang}',[App\Http\Controllers\KamarController::class, 'kamar_admin'])->name('admin-kamar');
 Route::get('/json-kamar/{kode_ruang}',[App\Http\Controllers\KamarController::class, 'cari_kamar'])->name('cari-kamar');
+Route::post('/update-status/{kode_ruang}', [App\Http\Controllers\KamarController::class,'updateStatus'])->name('update-status');
+
+
+

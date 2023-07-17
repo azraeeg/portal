@@ -108,18 +108,26 @@
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 
     {{-- ==========================================socket==================================================================== --}}
-    <!-- <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
     <script>
-        const socket = io.connect('http://192.168.110.218:3030');
-        document.addEventListener('click', (e) => {
-            if(e.target.tagName.toLowerCase() === 'button' && e.target.getAttribute('data-id')) {
-                const itemID = e.target.getAttribute('data-id');
-                socket.emit('order', {
-                    item_id : itemID,
-                })
-            }
+      const socket = io.connect('http://192.168.110.218:3030');
+      socket.on('orderkmr_processed', (data) => {
+          
+        //ubah nilai
+        var h1Element = document.querySelector('#status' + data.item_id);
+        var id_status = data.item_id;
+        var url = "{{route('cari-status',':id_status')}}";
+        $.ajax({
+          type: "GET",
+          url: url.replace(':id_status', id_status),
+          dataType: 'json',
+          success: function(res) {
+            h1Element.textContent = res.status;
+          }
         });
-    </script> -->
+
+      });
+    </script>
     {{-- ==========================================end socket==================================================================== --}}
     
 
@@ -136,7 +144,7 @@
         var cardCount = cards.length;
         
         // Mengatur waktu perpindahan slide (dalam milidetik)
-        var slideInterval = 3000;
+        var slideInterval = 2000;
         
         // Mengatur indeks awal
         var currentCardIndex = 0;
@@ -199,11 +207,9 @@
                 dataType: 'json',
                 success: function(res) {
                 $.each(res, function(index, item) {
-                    var h1Element = document.querySelector('#status' + item.id);
-                    var previousContent = h1Element.textContent;
-                    if (item.status !== previousContent) {
+                    
                     cardWidget.find('#status' + item.id).text(item.status);
-                    }
+                    
                 });
                 }
             });
