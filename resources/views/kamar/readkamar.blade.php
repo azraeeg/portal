@@ -50,7 +50,7 @@
   <body>
     <div class="wrapper container-fluid">
         <header class="py-5">
-          <h1 class="display-5 fw-bold text-center" style="color: white;font-size: 100px ;">INFORMASI KAMAR RSI KENDAL</h1>
+          <h1 class="display-5 fw-bold text-center" style="color: white;font-size: 100px ;">INFORMASI KAMAR RSI MUHAMMADIYAH KENDAL</h1>
         </header>
         
         <div class="row" id="slideShow">
@@ -144,7 +144,7 @@
         var cardCount = cards.length;
         
         // Mengatur waktu perpindahan slide (dalam milidetik)
-        var slideInterval = 2000;
+        var slideInterval = 5000;
         
         // Mengatur indeks awal
         var currentCardIndex = 0;
